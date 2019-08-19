@@ -25,6 +25,8 @@ var pageNameArray = ["Langdon_Park_School", "St_Dunstan%27s_College", "Deptford_
 
 
 var editCount = 0;
+var pageID = null;
+var continueKey = 0;
 
 button.addEventListener("click", function() {
 
@@ -32,14 +34,11 @@ button.addEventListener("click", function() {
 
   var pageListRequest = new XMLHttpRequest();
   // uses cors proxy
-  pageListRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'Shepherd%27s_Bush');
+  pageListRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye');
   pageListRequest.onload = function() {
     var pageListData = JSON.parse(pageListRequest.responseText);
     console.log(pageListData);
     //console.log(pageListData.query.pages);
-
-    var pageID = null;
-    var continueKey = null;
 
     for(const pages in pageListData.query.pages) {
         //console.log(pages);
@@ -54,25 +53,33 @@ button.addEventListener("click", function() {
       if(initialProps == 'continue') {
         continueKey = pageListData.continue.rvcontinue;
         //console.log(continueKey);
-        while(continueKey != null) {
+        while(continueKey != 0) {
           pageContinueRequest = new XMLHttpRequest();
           // uses cors proxy
-          pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'Shepherd%27s_Bush' + '&rvcontinue=' + continueKey);
+          pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye' + '&rvcontinue=' + continueKey);
           pageContinueRequest.onload = function() {
             var pageContinueData = JSON.parse(pageContinueRequest.responseText);
             //console.log(pageContinueData);
             editCount += pageContinueData.query.pages[pageID].revisions.length;
+            for(const continueProps in pageContinueData) {
+              if(continueProps == 'continue') {
+                continueKey = pageContinueData.continue.rvcontinue;
+                console.log(continueKey);
+              }
+              //NEED AN ELSE STATEMENT HERE OR SOMETHING TO SET CONTINUEKEY=0 IF THERE IS NO CONTINUE, MIGHT NEED BETTER APPROACH TO CYCLE THROUGH
+              //i.e. if the first one is continue, need to skip the rest, otherwise continuekeyt will be set to 0 no matter what since the other json
+              //elements are not 'continue' (its exectued either way atm)
+            }
             console.log("Shepherd%27s_Bush" + " " + editCount);
-            console.log(continueKey);
           };
           pageContinueRequest.send();
-          continueKey = null;
+          continueKey = 0;
 
         }
 
       }
       else if(initialProps == 'query') {
-        continueKey = null;
+        continueKey = 0;
         console.log(editCount);
 
       }
@@ -108,17 +115,7 @@ button.addEventListener("click", function() {
 
     //WHILE CONTINUE KEY != NULL, EXECUTE THE ABOVE FUNCTION USING THE CONTINUE KEY
     //WHEN DOING THIS, UPDATE THE CONTINUE KEY AT THE END TO REFLECT THE NEW ONE IF IT EXISTS
-    //IF IT DOES, CALL THE FUNCTION AGAIN (THIS IS THE FUNCTION THAT ALSO HAS TO UPDATE THE KEY) USING THE UPDATED KEY AS PARAMETER
 
-    /*for(const initialProps in pageListData) {
-      editCount += pageListData.query.pages[pageID].revisions.length;
-        if(initialProps == 'continue') {
-          continueKey = pageListData.continue.rvcontinue;
-          while(continueKey != null) {
-            addContinuedEdit(continueKey);
-          }
-        }
-    }*/
 
   };
   pageListRequest.send();

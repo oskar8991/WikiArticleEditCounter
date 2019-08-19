@@ -81,41 +81,8 @@ button.addEventListener("click", function() {
       else if(initialProps == 'query') {
         continueKey = 0;
         console.log(editCount);
-
       }
     }
-
-
-
-
-
-    /*for(const initialProps in pageListData) {
-      if(initialProps == 'continue') {
-        continueKey = pageListData.continue.rvcontinue;
-        while(continueKey != null) {
-          pageContinueRequest = new XMLHttpRequest();
-          pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'Shepherd%27s_Bush' + '&rvcontinue=' + continueKey);
-          pageContinueRequest.onload = function() {
-            var pageContinueData = JSON.parse(pageContinueRequest.responseText);
-            editCount += pageContinueData.query.pages[pageID].revisions.length;
-            for(const continueProps in pageContinueData) {
-              if(continueProps == 'continue') {
-                continueKey = pageContinueData.continue.rvcontinue;
-              }
-              else {
-                continueKey = null;
-              }
-            }
-          };
-          pageContinueRequest.send();
-        }
-      }
-    }*/
-
-
-    //WHILE CONTINUE KEY != NULL, EXECUTE THE ABOVE FUNCTION USING THE CONTINUE KEY
-    //WHEN DOING THIS, UPDATE THE CONTINUE KEY AT THE END TO REFLECT THE NEW ONE IF IT EXISTS
-
 
   };
   pageListRequest.send();

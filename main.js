@@ -37,51 +37,37 @@ button.addEventListener("click", function() {
   pageListRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye');
   pageListRequest.onload = function() {
     var pageListData = JSON.parse(pageListRequest.responseText);
-    console.log(pageListData);
-    //console.log(pageListData.query.pages);
 
     for(const pages in pageListData.query.pages) {
-        //console.log(pages);
         pageID = pages;
     }
-    //console.log(pageID);
 
     editCount += pageListData.query.pages[pageID].revisions.length;
 
-    for(const initialProps in pageListData) {
-      //console.log(initialProps);
-      if(initialProps == 'continue') {
-        continueKey = pageListData.continue.rvcontinue;
-        //console.log(continueKey);
-        while(continueKey != 0) {
-          pageContinueRequest = new XMLHttpRequest();
-          // uses cors proxy
-          pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye' + '&rvcontinue=' + continueKey);
-          pageContinueRequest.onload = function() {
-            var pageContinueData = JSON.parse(pageContinueRequest.responseText);
-            //console.log(pageContinueData);
-            editCount += pageContinueData.query.pages[pageID].revisions.length;
-            for(const continueProps in pageContinueData) {
-              if(continueProps == 'continue') {
-                continueKey = pageContinueData.continue.rvcontinue;
-                console.log(continueKey);
-              }
-              //NEED AN ELSE STATEMENT HERE OR SOMETHING TO SET CONTINUEKEY=0 IF THERE IS NO CONTINUE, MIGHT NEED BETTER APPROACH TO CYCLE THROUGH
-              //i.e. if the first one is continue, need to skip the rest, otherwise continuekeyt will be set to 0 no matter what since the other json
-              //elements are not 'continue' (its exectued either way atm)
-            }
-            console.log("Shepherd%27s_Bush" + " " + editCount);
-          };
-          pageContinueRequest.send();
-          continueKey = 0;
-
-        }
-
-      }
-      else if(initialProps == 'query') {
+    // do this if the first query returns a JSON object with a 'continue' id
+    if(pageListData.hasOwnProperty('continue')) {
+      continueKey = pageListData.continue.rvcontinue;
+      while(continueKey != 0) {
+        pageContinueRequest = new XMLHttpRequest();
+        pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye' + '&rvcontinue=' + continueKey);
+        pageContinueRequest.onload = function() {
+          var pageContinueData = JSON.parse(pageContinueRequest.responseText);
+          //console.log(pageContinueData);
+          editCount += pageContinueData.query.pages[pageID].revisions.length;
+          if(pageContinueData.hasOwnProperty('continue')) {
+            continueKey = pageContinueData.continue.rvcontinue;
+            console.log(continueKey);
+          } else {
+            continueKey = 0;
+          }
+          console.log("Shepherd%27s_Bush" + " " + editCount);
+        };
+        pageContinueRequest.send();
         continueKey = 0;
-        console.log(editCount);
       }
+    }
+    else {
+      console.log("Shepherd%27s_Bush" + " " + editCount);
     }
 
   };

@@ -57,7 +57,7 @@ button.addEventListener("click", function() {
           if(pageContinueData.hasOwnProperty('continue')) {
             continueKey = pageContinueData.continue.rvcontinue;
             console.log(continueKey);
-          } else {
+          } else if(pageContinueData.hasOwnProperty('batchcomplete')){
             // THIS IS THE ISSUE: ANY CHANGE TO CONTINUE KEY HERE HAPPENS AFTER THE WHILE LOOP HAS ENDED,
             // MEANING THAT UNLESS CONTINUEKEY IS SET TO 0 AT LINE 68, LOOP WILL NOT TERMINATE.
             continueKey = 0;

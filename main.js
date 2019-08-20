@@ -58,6 +58,8 @@ button.addEventListener("click", function() {
             continueKey = pageContinueData.continue.rvcontinue;
             console.log(continueKey);
           } else {
+            // THIS IS THE ISSUE: ANY CHANGE TO CONTINUE KEY HERE HAPPENS AFTER THE WHILE LOOP HAS ENDED,
+            // MEANING THAT UNLESS CONTINUEKEY IS SET TO 0 AT LINE 68, LOOP WILL NOT TERMINATE.
             continueKey = 0;
           }
           console.log("Shepherd%27s_Bush" + " " + editCount);

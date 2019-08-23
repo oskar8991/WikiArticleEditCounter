@@ -1,7 +1,7 @@
 
 
 //need list of all page names
-//need to normalize for link format (e.g. e.g. The_River_CafÃ©_(London) to The_River_Café_(London))
+//need to normalize for link format (e.g. The_River_CafÃ©_(London) to The_River_Café_(London))
 //[alter the link using a loop going through all the names]
 //load JSON link e.g. https://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=Shepherd%27s_Bush
 //need to check if there is an 'rvcontinue' variable
@@ -10,6 +10,16 @@
 //count the number of revisions
 
 //FORMAT: https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=Shepherd%27s_Bush
+
+// NORMALIZATIONS TO WORK WITH WIKI API
+// ‘s -> %27s
+// & -> %26
+// Ã© -> é
+// â“ -> –
+// â™ -> ‘
+// Ã¡ -> á
+// Ã³ -> ó
+// Ã­ -> í
 
 
 

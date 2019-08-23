@@ -47,26 +47,56 @@ button.addEventListener("click", function() {
     // do this if the first query returns a JSON object with a 'continue' id
     if(pageListData.hasOwnProperty('continue')) {
       continueKey = pageListData.continue.rvcontinue;
-      while(continueKey != 0) {
+      //console.log(continueKey);
+
+      var call = function(key) {
+        var xml = new XMLHttpRequest();
+        xml.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye' + '&rvcontinue=' + continueKey);
+        xml.onload = function() {
+          var error = false;
+          var xmlData = JSON.parse(xml.responseText);
+          if(!xmlData.hasOwnProperty('continue')) {
+            error = true;
+            editCount += xmlData.query.pages[pageID].revisions.length;
+            console.log(editCount);
+          }
+          if(error == false) {
+            editCount += xmlData.query.pages[pageID].revisions.length;
+            continueKey = xmlData.continue.rvcontinue;
+            //console.log('wo');
+            //console.log(continueKey);
+            //console.log(editCount);
+            call(continueKey);
+          }
+        };
+        xml.send();
+      }
+      call(continueKey);
+      //console.log(continueKey);
+      //console.log(editCount);
+
+
+
+
+
+      /*while(editCount % 500 != 0) {
         pageContinueRequest = new XMLHttpRequest();
         pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + 'London_Eye' + '&rvcontinue=' + continueKey);
-        pageContinueRequest.onload = function() {
+        pageContinueRequest.onload = function () {
           var pageContinueData = JSON.parse(pageContinueRequest.responseText);
-          //console.log(pageContinueData);
           editCount += pageContinueData.query.pages[pageID].revisions.length;
           if(pageContinueData.hasOwnProperty('continue')) {
             continueKey = pageContinueData.continue.rvcontinue;
-            console.log(continueKey);
-          } else if(pageContinueData.hasOwnProperty('batchcomplete')){
-            // THIS IS THE ISSUE: ANY CHANGE TO CONTINUE KEY HERE HAPPENS AFTER THE WHILE LOOP HAS ENDED,
-            // MEANING THAT UNLESS CONTINUEKEY IS SET TO 0 AT LINE 68, LOOP WILL NOT TERMINATE.
-            continueKey = 0;
+            getMoreEdits(continueKey);
           }
           console.log("Shepherd%27s_Bush" + " " + editCount);
+          console.log(continueKey);
         };
         pageContinueRequest.send();
-        continueKey = 0;
-      }
+        break;
+      }*/
+
+
     }
     else {
       console.log("Shepherd%27s_Bush" + " " + editCount);

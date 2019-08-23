@@ -31,10 +31,11 @@ var button = document.getElementById("button");
 var editCount = 0;
 var pageID = null;
 var continueKey = 0;
+var i=-1;
 
 button.addEventListener("click", function() {
 
-  for(i=0; i<1; i++) {
+    i++;
     pageName = pageNameArray[i];
     var pageListRequest = new XMLHttpRequest();
     // uses cors proxy
@@ -80,5 +81,5 @@ button.addEventListener("click", function() {
     };
     pageListRequest.send();
     editCount = 0;
-  }
+
 });

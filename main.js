@@ -48,8 +48,6 @@ button.addEventListener("click", function() {
           pageID = pages;
       }
 
-
-      console.log(pageListData);
       // if it has revisions attribute, add to first edit count and then progress (safety check)
       if(pageListData.query.pages.hasOwnProperty(pageID)) {
         editCount += pageListData.query.pages[pageID].revisions.length;

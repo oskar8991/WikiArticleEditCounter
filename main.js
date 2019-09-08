@@ -49,15 +49,13 @@ button.addEventListener("click", function() {
           pageID = pages;
       }
 
-      //console.log(pageListData);
-
-      // check for query error
+      // check for query return error (i.e. 'length' parameter missing)
       if(pageListData.query.pages.hasOwnProperty("-1")) {
         console.log(pageName + " " + "null");
       }
+      // the return values of the query contained expected values
       else {
         editCount += pageListData.query.pages[pageID].revisions.length;
-
 
         // do this if the first query returns a JSON object with a 'continue' id
         if(pageListData.hasOwnProperty('continue')) {

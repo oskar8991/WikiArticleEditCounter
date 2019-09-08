@@ -32,15 +32,15 @@ var button = document.getElementById("button");
 var editCount = 0;
 var pageID = null;
 var continueKey = 0;
-//var i=-1;
+var i=-1;
 
 button.addEventListener("click", function() {
 
-    //i++;
-    //pageName = pageNameArray[i];
+    i++;
+    pageName = pageNameArray[i];
     var pageListRequest = new XMLHttpRequest();
     // uses cors proxy
-    pageListRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + "Tregunter_Road");
+    pageListRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + pageName);
     pageListRequest.onload = function() {
       var pageListData = JSON.parse(pageListRequest.responseText);
 
@@ -49,8 +49,9 @@ button.addEventListener("click", function() {
       }
 
 
+      console.log(pageListData);
       // if it has revisions attribute, add to first edit count and then progress (safety check)
-      if(pageListData.hasOwnProperty('revisions')) {
+      if(pageListData.query.pages.hasOwnProperty(pageID)) {
         editCount += pageListData.query.pages[pageID].revisions.length;
       }
 
@@ -59,14 +60,14 @@ button.addEventListener("click", function() {
         continueKey = pageListData.continue.rvcontinue;
         var continueFunction = function(key) {
           var pageContinueRequest = new XMLHttpRequest();
-          pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + "Tregunter_Road" + '&rvcontinue=' + continueKey);
+          pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + pageName + '&rvcontinue=' + continueKey);
           pageContinueRequest.onload = function() {
             var error = false;
             var pageContinueData = JSON.parse(pageContinueRequest.responseText);
             if(!pageContinueData.hasOwnProperty('continue')) {
               error = true;
               editCount += pageContinueData.query.pages[pageID].revisions.length;
-              console.log("Tregunter_Road" + " " + editCount);
+              console.log(pageName + " " + editCount);
             }
             if(error == false) {
               editCount += pageContinueData.query.pages[pageID].revisions.length;
@@ -80,7 +81,7 @@ button.addEventListener("click", function() {
       }
       // do this if the first query returns a JSON object with no 'continue' id
       else {
-        console.log("Tregunter_Road" + " " + editCount);
+        console.log(pageName + " " + editCount);
       }
 
     };

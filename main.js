@@ -60,7 +60,7 @@ button.addEventListener("click", function() {
       if(pageListData.query.pages.hasOwnProperty("-1")) {
         console.log(pageName + " " + "null");
       }
-      // the return values of the query contained expected values
+      // do this if the query returned expected properties
       else {
         // special case for this project
         if(pageName === "United_Kingdom") {

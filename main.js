@@ -62,35 +62,41 @@ button.addEventListener("click", function() {
       }
       // the return values of the query contained expected values
       else {
-        editCount += pageListData.query.pages[pageID].revisions.length;
-
-        // do this if the first query returns a JSON object with a 'continue' id
-        if(pageListData.hasOwnProperty('continue')) {
-          continueKey = pageListData.continue.rvcontinue;
-          var continueFunction = function(key) {
-            var pageContinueRequest = new XMLHttpRequest();
-            pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + pageName + '&rvcontinue=' + continueKey);
-            pageContinueRequest.onload = function() {
-              var error = false;
-              var pageContinueData = JSON.parse(pageContinueRequest.responseText);
-              if(!pageContinueData.hasOwnProperty('continue')) {
-                error = true;
-                editCount += pageContinueData.query.pages[pageID].revisions.length;
-                console.log(pageName + " " + editCount);
-              }
-              if(error == false) {
-                editCount += pageContinueData.query.pages[pageID].revisions.length;
-                continueKey = pageContinueData.continue.rvcontinue;
-                continueFunction(continueKey);
-              }
-            };
-            pageContinueRequest.send();
-          }
-          continueFunction(continueKey);
+        // special case for this project
+        if(pageName === "United_Kingdom") {
+          console.log(pageName + " " + "null");
         }
-        // do this if the first query returns a JSON object with no 'continue' id
         else {
-          console.log(pageName + " " + editCount);
+          editCount += pageListData.query.pages[pageID].revisions.length;
+
+          // do this if the first query returns a JSON object with a 'continue' id
+          if(pageListData.hasOwnProperty('continue')) {
+            continueKey = pageListData.continue.rvcontinue;
+            var continueFunction = function(key) {
+              var pageContinueRequest = new XMLHttpRequest();
+              pageContinueRequest.open('GET', 'https://cors-anywhere.herokuapp.com/' + 'https://en.wikipedia.org/w/api.php?format=json&action=query&prop=revisions&rvprop=ids&rvlimit=max&titles=' + pageName + '&rvcontinue=' + continueKey);
+              pageContinueRequest.onload = function() {
+                var error = false;
+                var pageContinueData = JSON.parse(pageContinueRequest.responseText);
+                if(!pageContinueData.hasOwnProperty('continue')) {
+                  error = true;
+                  editCount += pageContinueData.query.pages[pageID].revisions.length;
+                  console.log(pageName + " " + editCount);
+                }
+                if(error == false) {
+                  editCount += pageContinueData.query.pages[pageID].revisions.length;
+                  continueKey = pageContinueData.continue.rvcontinue;
+                  continueFunction(continueKey);
+                }
+              };
+              pageContinueRequest.send();
+            }
+            continueFunction(continueKey);
+          }
+          // do this if the first query returns a JSON object with no 'continue' id
+          else {
+            console.log(pageName + " " + editCount);
+          }
         }
       }
     };

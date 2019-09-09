@@ -4,6 +4,8 @@ Uses the MediaWiki API to query for revision data for a set page and
 then obtains the total edit count. Technologies used include HTML, JavaScript,
 JSON, and AJAX. To avoid a browser resource error, fetching the data for a page name array
 via the .html file only retrieves the data for one page at a time.
+Edit the pageNameArray according to what page names are being checked with the
+correct normalizations (a few examples are below)
 
 Written by Oskar Ljungdell
 */
